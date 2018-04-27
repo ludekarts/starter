@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest --watchAll",
+    "test": "jest",
     "clean": "rimraf dist/*",
     "start": "webpack-dev-server --mode development",
     "build": "npm run clean && cross-env NODE_ENV=build webpack --mode production",

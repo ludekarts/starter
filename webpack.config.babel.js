@@ -78,6 +78,30 @@ export default() => ({
     contentBase: path.resolve(__dirname, "dist")
   },
 
+  optimization: {
+    splitChunks: {
+    	chunks: "all",
+      name: true,
+      minChunks: 1,
+    	minSize: 30000,
+    	maxAsyncRequests: 5,
+    	maxInitialRequests: 3,
+    	cacheGroups: {
+    		default: {
+    			minChunks: 2,
+    			priority: -20,
+    			reuseExistingChunk: true
+    		},
+    		vendors: {
+    			test: /[\\/]node_modules[\\/]/,
+          reuseExistingChunk: true,
+          priority: -10
+    		}
+    	}
+    },
+    runtimeChunk: true
+  },
+
   plugins: [
     new HtmlWebpackPlugin({
       inject: "body",

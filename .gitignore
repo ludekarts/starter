@@ -1,5 +1,4 @@
 dist
 node_modules
 bower_components
-src/config/config.dev.js
-src/config/config.build.js
+src/app/config/config.dev.js

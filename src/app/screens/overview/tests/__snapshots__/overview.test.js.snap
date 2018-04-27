@@ -15,8 +15,6 @@ exports[`Overview Tests Renders correctly 1`] = `
   </span>
   <span
     className="message"
-  >
-    
-  </span>
+  />
 </div>
 `;

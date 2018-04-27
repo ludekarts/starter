@@ -44,7 +44,7 @@ const Label = styled.span`
 
 export default props => {
   if (props.error) {
-    console.error("Component Loading Error\n", props.error)
+    props.error && typeof props.error !== "boolean" && console.error("Component Loading Error\n", props.error)
     return <Label color="#f7003b">Component Error</Label>
   }
   else if (props.timedOut) {
@@ -52,7 +52,7 @@ export default props => {
   }
   else if (props.pastDelay) {
     return (
-      <Spinner className="spinner" color={props.color}>
+      <Spinner color={props.color}>
         <div></div>
         <div></div>
         <div></div>
