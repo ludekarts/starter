@@ -1,4 +1,4 @@
-// Redux helpers v 0.1.2
+// Redux helpers v 0.3.0
 // by Wojciech Ludwin, ludekarts@gmail.com, 2018.
 
 // Check for primitie types & array.
@@ -23,6 +23,8 @@ const chunk = (array, size) => {
   return chunks
 }
 
+// Generate UID.
+const uid = () => "RHM" + ((+new Date) + Math.random()* 100).toString(32);
 
 // ---- Utilities ----------------
 
@@ -108,4 +110,23 @@ export default ({dispatch, getState}) => next => action => {
     return action(dispatch, getState)
   else
     return next(action)
+}
+
+
+// Create Redux Utilities.
+// Helper that gelps to reduce boilerplate code when destructuring redux related utilities like e.g.
+// consts, actions, reducer,selectors etc. It also produce the "storeHook" for rootReducer.
+// If there is no "STORE_ROOT" const to supply it UID will be genrated automaticly with console warning.
+export const createReduxUtils = (fromReducer, actions, consts = {}) => {
+  let storeRoot = consts.STORE_ROOT
+
+  if (!storeRoot) {
+    storeRoot = uid()
+    console.warn("There is no STORE_ROOT constant to generate 'storeHook'. UID was gennerated: " + storeRoot)
+  }
+
+  const reducer = fromReducer.default
+  const selectors = fromReducer.selectors
+  const storeHook = {[storeRoot]: reducer}
+  return {storeHook, actions, selectors, consts}
 }

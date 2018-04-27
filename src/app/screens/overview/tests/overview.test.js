@@ -1,6 +1,5 @@
 import React from "react"
 import {shallow, mount} from "enzyme"
-import renderer from "react-test-renderer"
 import {createStore, combineReducers} from "redux"
 
 // Component.
@@ -8,10 +7,11 @@ import Overview from "../overview"
 
 // Redux.
 import reducer from "reducer"
-import {storeHook, actions, selectors} from "../index"
+import {utils} from "../index"
 
-const {sayHello} = actions
-const {getMessage} = selectors
+const {storeHook} = utils
+const {sayHello} = utils.actions
+const {getMessage} = utils.selectors
 
 
 describe("Overview Tests", () => {
