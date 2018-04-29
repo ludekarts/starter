@@ -12,20 +12,23 @@ import * as actions from "actions"
 import * as reducer from "reducer"
 
 // Redux Utilities.
-export const utils = createReduxUtils(reducer, actions, consts)
+export const utils = createReduxUtils(reducer, actions, consts, "CUSTOM")
 
 
 // ---- Connect ----------------
 
-const {sayHello} = utils.actions
-const overwiew = utils.selectors
+const overview = utils.selectors
+const {sayHello, sayAsync} = utils.actions
 
 const mapStateToProps = state => ({
-  message: overwiew.getMessage(state)
+  pending: overview.isPending(state),
+  message: overview.getMessage(state),
+  haveMessage: overview.haveMessage(state)
 })
 
 const mapDispatchToProps = dispatch => ({
-  sayHello: () => dispatch(sayHello())
+  sayHello: () => dispatch(sayHello()),
+  sayAsync: (message) => dispatch(sayAsync(message))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Overview)

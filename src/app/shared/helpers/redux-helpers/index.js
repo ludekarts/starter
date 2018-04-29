@@ -9,7 +9,10 @@ const isPrimitive = object => !object
   || Array.isArray(object)
 
 // Verify ~ name convention.
-const isAction = (type) => typeof type === "string" && /^[A-Z_-]+$/gm.test(type)
+const isAction = (type) => typeof type === "string" && /^[0-9A-Z_-]+$/gm.test(type)
+
+// Verify if action need to be skipped.
+const isBypass = args => args[0] && typeof args[0] === "string" && args[0] === "RHM%BYPASS"
 
 // Dumb check, but it works for most cases.
 const isPromise = fn => fn && typeof fn.then === "function"
@@ -24,18 +27,30 @@ const chunk = (array, size) => {
 }
 
 // Generate UID.
-const uid = () => "RHM" + ((+new Date) + Math.random()* 100).toString(32);
+const uid = () => "RHM." + ((+new Date) + Math.random()* 100).toString(32);
 
 // ---- Utilities ----------------
 
 // Create Action Helper.
-export const createAction = (type, exec) => {
+export const createAction = (type, body) => {
   if (!isAction(type)) throw "Action type name does not match common pattern: [A-Z_-]+"
-  return (...args) => ({
-    type,
-    args,
-    payload: typeof exec === "function" ? exec(...args) : exec
-  })
+  return (...args) => {
+    let payload
+    if (isBypass(args)) {
+      payload = body
+    }
+    else {
+      if (typeof body === "function") {
+        payload = body(...args)
+        console.log("function");
+      }
+      else {
+        payload = body
+        console.log("body");
+      }
+    }
+    return {type, args, payload}
+  }
 }
 
 // Create Reducer Helper.
@@ -61,7 +76,12 @@ export const createReducer = (...args) => {
   }, {})
 
   return (initialState) => {
-    return (state = initialState, action) => {
+    return (state = initialState, action, exit = false) => {
+
+      // Exit with reducer's args & initialState => for actions customization.
+      if (state === null && action === null && exit) return [args, initialState]
+
+      // Default reducing logic.
       const reducer = cases[action.type]
       if (reducer) {
         if (isPrimitive(reducer)) {
@@ -113,20 +133,59 @@ export default ({dispatch, getState}) => next => action => {
 }
 
 
+// ---- Redux Utilities ----------------
+
+// Annotate actions with custom hash.
+const annotateActions = (actions, storeRoot) =>
+  Object.keys(actions).reduce((acc, name) => {
+    const action = actions[name]("RHM%BYPASS")
+    acc[name] = createAction(`${action.type}_${storeRoot}`, action.payload)
+    return acc
+  }, {})
+
+
+// Annotate reducer's actions with custom hash.
+const annotateReducer = (reducer, storeRoot) => {
+  const [reducerArgs, initialState] = reducer(null, null, true)
+  const annotatedReducer = reducerArgs.map((arg, index) =>
+    index % 2 === 0
+      ? /(_COMPLETE|_ERROR)$/m.test(arg)
+        ? arg.replace(/(_COMPLETE|_ERROR)$/m, match => `_${storeRoot}${match}`)
+        : `${arg}_${storeRoot}`
+      : arg
+  )
+  return createReducer(...annotatedReducer)(initialState)
+}
+
+
 // Create Redux Utilities.
 // Helper that gelps to reduce boilerplate code when destructuring redux related utilities like e.g.
 // consts, actions, reducer,selectors etc. It also produce the "storeHook" for rootReducer.
 // If there is no "STORE_ROOT" const to supply it UID will be genrated automaticly with console warning.
-export const createReduxUtils = (fromReducer, actions, consts = {}) => {
-  let storeRoot = consts.STORE_ROOT
 
+// NOTE: When You're creating your Selectros you can wrap them in a function (root) => ({selcetors})
+//       to supply them with dynamic "STORE_ROOT" key.
+//
+export const createReduxUtils = (fromReducer, fromActions, consts = {}, hash) => {
+  let storeRoot = hash || consts.STORE_ROOT
+  let actions = fromActions
+  let reducer = fromReducer.default
+
+  // Create random "storeRoot" to not crash.
   if (!storeRoot) {
     storeRoot = uid()
     console.warn("There is no STORE_ROOT constant to generate 'storeHook'. UID was gennerated: " + storeRoot)
   }
 
-  const reducer = fromReducer.default
-  const selectors = fromReducer.selectors
+  // Annotate action types and reducer's functions with given hash.
+  if (hash) {
+    actions = annotateActions(actions, storeRoot)
+    reducer = annotateReducer(reducer, storeRoot)
+  }
+
+  const selectors = typeof fromReducer.selectors === "function"
+    ? fromReducer.selectors(storeRoot)
+    : fromReducer.selectors
   const storeHook = {[storeRoot]: reducer}
   return {storeHook, actions, selectors, consts}
 }

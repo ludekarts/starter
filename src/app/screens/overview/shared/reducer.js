@@ -1,23 +1,35 @@
 import {STORE_ROOT} from "consts"
 import {createSelector} from "reselect"
-import {createReducer} from "helpers/redux-helpers"
+import {createReducer, createBoundSelectors} from "helpers/redux-helpers"
 
 const init = {
-  message: ""
+  message: "",
+  pending: false
 }
 
 // ---- Reducer ----------------
 
 export default createReducer(
   "HELLO", message => ({message}),
+  "SAY_ASYNC", {pending: true},
+  "SAY_ASYNC_COMPLETE", message => ({message, pending: false})
 )(init)
 
 
-// ---- Selectros ----------------
+// ---- Static Selectros -----------------
 
-const selectors = {}
+// const selectors = {}
+// selectors.getMessage = state => state[STORE_ROOT].message,
+// selectors.haveMessage = createSelector(selectors.getMessage, message => !!message.length)
 
-// Simple selector.
-selectors.getMessage = state => state[STORE_ROOT].message
+// ---- Dynamic Selectros ----------------
+
+const selectors = root => {
+  const selectors = {}
+  selectors.isPending = state => state[root].pending
+  selectors.getMessage = state => state[root].message
+  selectors.haveMessage = createSelector(selectors.getMessage, message => !!message.length)
+  return selectors
+}
 
 export {selectors}
