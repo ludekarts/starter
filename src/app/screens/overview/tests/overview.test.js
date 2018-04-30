@@ -8,7 +8,6 @@ import rhm, {testAsyncActions} from "helpers/redux-helpers"
 import Overview from "../overview"
 
 // Redux.
-import reducer from "reducer"
 import {utils} from "../index"
 
 const {storeHook} = utils
@@ -26,19 +25,24 @@ describe("Overview Tests", () => {
     sayAsync: () => {}
   }
 
-  it ("Should display 'greeting' message", () => {
-    const wrapper = shallow(<Overview {...overviewProps}  message="greeting"/>)
+
+  it ("Should display \"greeting\" message", () => {
+    const wrapper = shallow(<Overview {...overviewProps} message="greeting"/>)
     const message = wrapper.find("span[data-message]").text()
     expect(message).toBe("greeting")
   })
 
+
+
   describe("Overview Redux Tests", () => {
 
-    it("Should create HELLO message in store", () => {
+    it("Should create \"hello\" message in store", () => {
       const store = createStore(combineReducers({...storeHook}))
       store.dispatch(sayHello())
       expect(getMessage(store.getState())).toEqual("hello")
     })
+
+
 
     it ("Should show \"hello\" message after button click", () => {
 
@@ -51,6 +55,8 @@ describe("Overview Tests", () => {
       const message = wrapper.find("span[data-message]").text()
       expect(message).toEqual("hello")
     })
+
+
 
     it ("Should show \"Async Hello\" message after button click", () => {
 
@@ -80,16 +86,8 @@ describe("Overview Tests", () => {
     })
 
 
+
     it("Renders correctly", () => {
-
-      const overviewProps = {
-        message: "",
-        pending: false,
-        haveMessage: false,
-        sayHello: () => {},
-        sayAsync: () => {}
-      }
-
       const wrapper = shallow(<Overview {...overviewProps} />)
       expect(wrapper).toMatchSnapshot()
     })
