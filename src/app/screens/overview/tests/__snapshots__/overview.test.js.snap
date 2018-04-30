@@ -1,20 +1,31 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Overview Tests Renders correctly 1`] = `
+exports[`Overview Tests Overview Redux Tests Renders correctly 1`] = `
 <div>
   <h1>
-    Overview
+    Overview 
+    🕵️
   </h1>
   <button
+    data-hello={true}
     onClick={[Function]}
   >
     Say Hello
   </button>
   <span>
+     🖐 
+  </span>
+  <button
+    data-async={true}
+    onClick={[Function]}
+  >
+    Say it Async
+  </button>
+  <span>
      → 
   </span>
   <span
-    className="message"
+    data-message={true}
   />
 </div>
 `;

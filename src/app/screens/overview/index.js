@@ -12,7 +12,11 @@ import * as actions from "actions"
 import * as reducer from "reducer"
 
 // Redux Utilities.
-export const utils = createReduxUtils(reducer, actions, consts, "CUSTOM")
+// Default behavior is to use contants to create proper "stroeHook"
+// It cane be overrided with 4th parameter that is customization for all actions & reducer fns.
+// export const utils = createReduxUtils(reducer, actions, consts, "CUSTOM") // ✨ Custonization
+
+export const utils = createReduxUtils(reducer, actions, consts)
 
 
 // ---- Connect ----------------

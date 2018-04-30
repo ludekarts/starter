@@ -1,4 +1,4 @@
-// Redux helpers v 0.3.0
+// Redux helpers v 0.4.0
 // by Wojciech Ludwin, ludekarts@gmail.com, 2018.
 
 // Check for primitie types & array.
@@ -35,20 +35,7 @@ const uid = () => "RHM." + ((+new Date) + Math.random()* 100).toString(32);
 export const createAction = (type, body) => {
   if (!isAction(type)) throw "Action type name does not match common pattern: [A-Z_-]+"
   return (...args) => {
-    let payload
-    if (isBypass(args)) {
-      payload = body
-    }
-    else {
-      if (typeof body === "function") {
-        payload = body(...args)
-        console.log("function");
-      }
-      else {
-        payload = body
-        console.log("body");
-      }
-    }
+    const payload = isBypass(args) ? body : typeof body === "function" ? body(...args) : body
     return {type, args, payload}
   }
 }
@@ -174,7 +161,7 @@ export const createReduxUtils = (fromReducer, fromActions, consts = {}, hash) =>
   // Create random "storeRoot" to not crash.
   if (!storeRoot) {
     storeRoot = uid()
-    console.warn("There is no STORE_ROOT constant to generate 'storeHook'. UID was gennerated: " + storeRoot)
+    console.warn("There is no STORE_ROOT constant to generate 'storeHook'. UID was generated: " + storeRoot)
   }
 
   // Annotate action types and reducer's functions with given hash.
@@ -188,4 +175,31 @@ export const createReduxUtils = (fromReducer, fromActions, consts = {}, hash) =>
     : fromReducer.selectors
   const storeHook = {[storeRoot]: reducer}
   return {storeHook, actions, selectors, consts}
+}
+
+
+// ---- Test Async Actions ----------------
+
+export const testAsyncActions = () => {
+
+  let timer
+  let resolveProise
+  let stopActionRegex = /\^/
+
+  const sniffer = store => next => action => {
+    if (stopActionRegex.test(action.type)) {
+      timer && clearTimeout(timer)
+      resolveProise(action)
+    }
+    return next(action)
+  }
+
+
+  const listener = (action, timeout, resolveActionType) => new Promise((resolve, reject) => {
+    resolveProise = resolve
+    stopActionRegex = new RegExp(resolveActionType ? resolveActionType : `(${action.type}_COMPLETE|${action.type}_ERROR)`, "m")
+    if (timeout) timer = setTimeout(() => reject("Async action time exeded"), timeout)
+  })
+
+  return {sniffer, listener}
 }

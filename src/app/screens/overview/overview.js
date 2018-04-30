@@ -17,11 +17,11 @@ export default class Overview extends React.PureComponent {
     return (
       <div>
         <h1>Overview { this.props.pending ? "🌌" : this.props.haveMessage ? "👑" : "🕵️"}</h1>
-        <button onClick={this.props.sayHello}>Say Hello</button>
+        <button onClick={this.props.sayHello} data-hello>Say Hello</button>
         <span> 🖐 </span>
-        <button onClick={this.sayAsync}>Say it Async</button>
+        <button onClick={this.sayAsync} data-async>Say it Async</button>
         <span> → </span>
-        <span className="message">{this.props.message}</span>
+        <span data-message>{this.props.message}</span>
       </div>
     )
   }
