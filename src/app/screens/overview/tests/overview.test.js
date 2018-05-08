@@ -2,7 +2,7 @@ import React from "react"
 import {shallow, mount} from "enzyme"
 import {createStore, combineReducers, applyMiddleware} from "redux"
 
-import rhm, {testAsyncActions} from "helpers/redux-helpers"
+import rhm, {testAsyncActions} from "rhm"
 
 // Component.
 import Overview from "../overview"

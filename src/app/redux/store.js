@@ -1,5 +1,5 @@
+import rhm from "rhm"
 import logger from "redux-logger"
-import rhm from "helpers/redux-helpers"
 import {applyMiddleware, createStore} from "redux"
 import {composeWithDevTools} from "redux-devtools-extension"
 

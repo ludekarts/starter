@@ -9,6 +9,11 @@
   - Webpack
   - Jest + Enzyme
 
+## Installation
+
+1. Clone the repo: `git clone https://github.com/ludekarts/starter.git`
+2. Remove `.git/` catalog `rm -rf .git` (ues Git Bash comandline tool on Windows)
+
 
 #### Dependencies.
 
@@ -25,5 +30,4 @@ npm i -D ncp rimraf cross-env webpack webpack-cli webpack-dev-server babel-loade
 ```
 
 ## To Do
- - Move Redux-Helpers to its own repo.
  - Extend Readme

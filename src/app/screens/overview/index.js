@@ -1,5 +1,5 @@
 import {connect} from "react-redux"
-import {createReduxUtils} from "helpers/redux-helpers"
+import {createReduxUtils} from "rhm"
 
 // Component.
 import Overview from "./overview"

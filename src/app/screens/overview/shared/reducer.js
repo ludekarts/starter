@@ -1,6 +1,6 @@
 import {STORE_ROOT} from "consts"
 import {createSelector} from "reselect"
-import {createReducer, createBoundSelectors} from "helpers/redux-helpers"
+import {createReducer, createBoundSelectors} from "rhm"
 
 const init = {
   message: "",
