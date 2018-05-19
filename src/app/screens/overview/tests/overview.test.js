@@ -7,12 +7,12 @@ import rhm, {testAsyncActions} from "rhm"
 // Component.
 import Overview from "../overview"
 
-// Redux.
-import {utils} from "../index"
+// Redux utilities.
+import {overview} from "../index"
 
-const {storeHook} = utils
-const {getMessage} = utils.selectors
-const {sayHello, sayAsync} = utils.actions
+const {storeHook} = overview
+const {getMessage} = overview.selectors
+const {sayHello, sayAsync} = overview.actions
 
 
 describe("Overview Tests", () => {

@@ -16,18 +16,17 @@ import * as _reducer from "reducer"
 // It cane be overrided with 4th parameter that is customization for all actions & reducer fns.
 // export const utils = createReduxUtils(reducer, actions, consts, "CUSTOM") // ✨ Custonization
 
-export const utils = createReduxUtils(_reducer, _actions, _consts)
+export const overview = createReduxUtils(_reducer, _actions, _consts)
 
 
 // ---- Connect ----------------
 
-const overview = utils.selectors
-const actions = utils.actions
+const {actions, selectors} = overview
 
 const mapStateToProps = state => ({
-  pending: overview.isPending(state),
-  message: overview.getMessage(state),
-  haveMessage: overview.haveMessage(state)
+  pending: selectors.isPending(state),
+  message: selectors.getMessage(state),
+  haveMessage: selectors.haveMessage(state)
 })
 
 const mapDispatchToProps = dispatch => ({
