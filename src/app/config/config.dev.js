@@ -4,7 +4,8 @@ const config = {
   analytics: {
     on: false,
     id: "UA-XXXXXXXX-X"
-  }
+  },
+  api: {}
 }
 
 export default config

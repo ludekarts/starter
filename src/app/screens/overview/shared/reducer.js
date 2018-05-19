@@ -1,4 +1,5 @@
-import {STORE_ROOT} from "consts"
+// import {STORE_ROOT} from "consts" // Use for Static Selectros.
+
 import {createSelector} from "reselect"
 import {createReducer, createBoundSelectors} from "rhm"
 
