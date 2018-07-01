@@ -1,7 +1,5 @@
-// import {STORE_ROOT} from "consts" // Use for Static Selectros.
-
+import {createReducer} from "rhm"
 import {createSelector} from "reselect"
-import {createReducer, createBoundSelectors} from "rhm"
 
 const init = {
   message: "",
@@ -10,27 +8,19 @@ const init = {
 
 // ---- Reducer ----------------
 
-export default createReducer(
-  "HELLO", message => ({message}),
-  "SAY_ASYNC", {pending: true},
-  "SAY_ASYNC_COMPLETE", message => ({message, pending: false})
-)(init)
+export default createReducer({
+  HELLO: message => ({message}),
+  SAY_ASYNC: {pending: true},
+  SAY_ASYNC_COMPLETE: message => ({message, pending: false})
+})(init)
 
 
-// ---- Static Selectros -----------------
+// ---- Selectros -----------------
+// NOTE: "state" argument is a slice the global state object related to the current reducer state (init).
 
-// const selectors = {}
-// selectors.getMessage = state => state[STORE_ROOT].message,
-// selectors.haveMessage = createSelector(selectors.getMessage, message => !!message.length)
-
-// ---- Dynamic Selectros ----------------
-
-const selectors = root => {
-  const selectors = {}
-  selectors.isPending = state => state[root].pending
-  selectors.getMessage = state => state[root].message
-  selectors.haveMessage = createSelector(selectors.getMessage, message => !!message.length)
-  return selectors
-}
+const selectors = {}
+selectors.isPending = state => state.pending
+selectors.getMessage = state => state.message
+selectors.haveMessage = createSelector(selectors.getMessage, message => !!message.length)
 
 export {selectors}

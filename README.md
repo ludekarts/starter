@@ -19,7 +19,7 @@
 
 Install all Deps. in highest versions.
 ```
-npm i -S react react-dom react-router react-router-dom styled-components redux react-redux reselect react-loadable
+npm i -S react react-dom react-router react-router-dom styled-components redux react-redux reselect react-loadable rhm
 ```
 
 #### Dev Dependencies.

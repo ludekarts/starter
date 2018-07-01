@@ -4,6 +4,9 @@ import {injectGlobal} from "styled-components"
 import ComponentLoader from "helpers/component-loader"
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom"
 
+// Config.
+import config from "config"
+
 // Redux.
 import store from "../redux/store"
 import {Provider} from "react-redux"
@@ -22,7 +25,7 @@ injectGlobal`
 
 export default hot(module)(prop =>
   <Provider store={store}>
-    <Router>
+    <Router basename={config.basename}>
       <Switch>
         <Route path="/" exact component={Overview}/>
       </Switch>

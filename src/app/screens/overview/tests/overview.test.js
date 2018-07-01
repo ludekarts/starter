@@ -2,7 +2,7 @@ import React from "react"
 import {shallow, mount} from "enzyme"
 import {createStore, combineReducers, applyMiddleware} from "redux"
 
-import rhm, {testAsyncActions} from "rhm"
+import rhm, {testAsyncActions, mountReducers} from "rhm"
 
 // Component.
 import Overview from "../overview"
@@ -10,7 +10,6 @@ import Overview from "../overview"
 // Redux utilities.
 import {overview} from "../index"
 
-const {storeHook} = overview
 const {getMessage} = overview.selectors
 const {sayHello, sayAsync} = overview.actions
 
@@ -37,7 +36,7 @@ describe("Overview Tests", () => {
   describe("Overview Redux Tests", () => {
 
     it("Should create \"hello\" message in store", () => {
-      const store = createStore(combineReducers({...storeHook}))
+      const store = createStore(combineReducers(mountReducers(overview)))
       store.dispatch(sayHello())
       expect(getMessage(store.getState())).toEqual("hello")
     })
@@ -46,7 +45,7 @@ describe("Overview Tests", () => {
 
     it ("Should show \"hello\" message after button click", () => {
 
-      const store = createStore(combineReducers({...storeHook}))
+      const store = createStore(combineReducers(mountReducers(overview)))
       const wrapper = mount(<Overview {...overviewProps} sayHello={() => store.dispatch(sayHello())} />)
 
       store.subscribe(() => wrapper.setProps({message: getMessage(store.getState())}))
@@ -61,7 +60,7 @@ describe("Overview Tests", () => {
     it ("Should show \"Async Hello\" message after button click", () => {
 
       const {sniffer, listener} = testAsyncActions()
-      const store = createStore(combineReducers({...storeHook}), applyMiddleware(rhm, sniffer))
+      const store = createStore(combineReducers(mountReducers(overview)), applyMiddleware(rhm, sniffer))
 
       // Since value of async message came from the internal <Overview/> state make sure that "dispatchedAction"
       // is the same as the one we want to listen for.

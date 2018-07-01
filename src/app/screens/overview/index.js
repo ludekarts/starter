@@ -1,5 +1,6 @@
 import {connect} from "react-redux"
 import {createReduxUtils} from "rhm"
+import {bindActionCreators} from "redux"
 
 // Component.
 import Overview from "./overview"
@@ -7,21 +8,21 @@ import Overview from "./overview"
 
 // ---- Redux ------------------
 
-import * as _consts from "consts"
-import * as _actions from "actions"
-import * as _reducer from "reducer"
+import * as consts from "consts"
+import * as actions from "actions"
+import * as reducer from "reducer"
 
 // Redux Utilities.
-// Default behavior is to use contants to create proper "stroeHook"
-// It cane be overrided with 4th parameter that is customization for all actions & reducer fns.
-// export const utils = createReduxUtils(reducer, actions, consts, "CUSTOM") // ✨ Custonization
-
-export const overview = createReduxUtils(_reducer, _actions, _consts)
+// Create Redux Utilities object containing mounting point for Overview component in the rootReducer,
+// along with "actions", "selectors" and "consts" reated to the Overview.
+// createReduxUtils() can also add custom namesaces to the actions so you can reuse component's functionality
+// in other instances, or extend new components with current one.
+export const overview = createReduxUtils({reducer, actions, consts})
 
 
 // ---- Connect ----------------
 
-const {actions, selectors} = overview
+const {actions: overviewActions, selectors} = overview
 
 const mapStateToProps = state => ({
   pending: selectors.isPending(state),
@@ -29,9 +30,8 @@ const mapStateToProps = state => ({
   haveMessage: selectors.haveMessage(state)
 })
 
-const mapDispatchToProps = dispatch => ({
-  sayHello: () => dispatch(actions.sayHello()),
-  sayAsync: (message) => dispatch(actions.sayAsync(message))
-})
+const mapDispatchToProps = dispatch =>
+  bindActionCreators(overviewActions, dispatch)
+
 
 export default connect(mapStateToProps, mapDispatchToProps)(Overview)
